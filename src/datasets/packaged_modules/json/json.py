@@ -161,11 +161,11 @@ class Json(datasets.ArrowBasedBuilder):
                         df.columns = list(self.config.features) if self.config.features else ["text"]
                     pa_table = pa.Table.from_pandas(df, preserve_index=False)
                     if self.config.columns is not None:
-                    missing_cols = [col for col in self.config.columns if col not in pa_table.column_names]
-                    if missing_cols:
-                        for col in missing_cols:
-                            pa_table = pa_table.append_column(col, pa.array([None] * len(pa_table)))
-                    pa_table = pa_table.select(self.config.columns)
+                        missing_cols = [col for col in self.config.columns if col not in pa_table.column_names]
+                        if missing_cols:
+                            for col in missing_cols:
+                                pa_table = pa_table.append_column(col, pa.array([None] * len(pa_table)))
+                        pa_table = pa_table.select(self.config.columns)
                     yield Key(shard_idx, 0), self._cast_table(pa_table)
 
                 # If the files are agent traces (one row = one file)
